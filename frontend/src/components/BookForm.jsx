@@ -6,6 +6,10 @@ import {
   Input,
   useToast,
   VStack,
+  useColorModeValue,
+  Box,
+  Flex,
+  Spacer,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { createBook, editBook } from "../modules/fetch";
@@ -13,6 +17,7 @@ import { createBook, editBook } from "../modules/fetch";
 export default function BookForm({ bookData }) {
   const toast = useToast();
   const [selectedImage, setSelectedImage] = useState(null);
+  const formBackground = useColorModeValue('white', 'gray.700');
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -83,58 +88,109 @@ export default function BookForm({ bookData }) {
   }, [bookData]);
 
   return (
-    <form onSubmit={handleSubmit}>
-      <VStack spacing={4}>
-        <FormControl>
-          <FormLabel>Title</FormLabel>
-          <Input name="title" required defaultValue={bookData?.title} />
-        </FormControl>
-        <FormControl>
-          <FormLabel>Author</FormLabel>
-          <Input name="author" required defaultValue={bookData?.author} />
-        </FormControl>
-        <FormControl>
-          <FormLabel>Publisher</FormLabel>
-          <Input name="publisher" required defaultValue={bookData?.publisher} />
-        </FormControl>
-        <FormControl>
-          <FormLabel>Year</FormLabel>
-          <Input
-            name="year"
-            type="number"
-            required
-            defaultValue={bookData?.year}
-          />
-        </FormControl>
-        <FormControl>
-          <FormLabel>Pages</FormLabel>
-          <Input
-            name="pages"
-            type="number"
-            required
-            defaultValue={bookData?.pages}
-          />
-        </FormControl>
-        {selectedImage && (
-          <Image w={64} src={selectedImage} alt="Selected Image" />
-        )}
-        {!bookData?.image && (
-          <FormControl>
-            <FormLabel>Image</FormLabel>
-            <Input
-              name="image"
-              type="file"
-              accept="image/*"
-              onChange={(e) => {
-                const file = e.target.files[0];
-                setSelectedImage(URL.createObjectURL(file));
-              }}
-            />
-          </FormControl>
-        )}
+    <Box
+      p={8}
+      boxShadow="base"
+      rounded="lg"
+      bg={formBackground}
+      maxW="2xl"
+      mx="auto"
+    >
+      <form onSubmit={handleSubmit}>
+        <Flex direction={{ base: "column", md: "row" }} gap={6}>
+          <VStack spacing={4} flex="1">
+            <FormControl id="title">
+              <FormLabel>Title</FormLabel>
+              <Input
+                variant="filled"
+                name="title"
+                required
+                defaultValue={bookData?.title}
+                placeholder="Enter book title"
+              />
+            </FormControl>
+            <FormControl id="author">
+              <FormLabel>Author</FormLabel>
+              <Input
+                variant="filled"
+                name="author"
+                required
+                defaultValue={bookData?.author}
+                placeholder="Enter author's name"
+              />
+            </FormControl>
+            <FormControl id="publisher">
+              <FormLabel>Publisher</FormLabel>
+              <Input
+                variant="filled"
+                name="publisher"
+                required
+                defaultValue={bookData?.publisher}
+                placeholder="Enter publisher"
+              />
+            </FormControl>
+            <FormControl id="year">
+              <FormLabel>Year</FormLabel>
+              <Input
+                variant="filled"
+                name="year"
+                type="number"
+                required
+                defaultValue={bookData?.year}
+                placeholder="Enter year of publication"
+              />
+            </FormControl>
+            <FormControl id="pages">
+              <FormLabel>Pages</FormLabel>
+              <Input
+                variant="filled"
+                name="pages"
+                type="number"
+                required
+                defaultValue={bookData?.pages}
+                placeholder="Enter number of pages"
+              />
+            </FormControl>
+          </VStack>
 
-        <Button type="submit">{bookData ? "Edit Book" : "Create Book"}</Button>
-      </VStack>
-    </form>
+          <VStack spacing={4} align="stretch" flex="1">
+            <FormControl id="image">
+              <FormLabel>Image</FormLabel>
+              <Input
+                p={1}
+                variant="flushed"
+                name="image"
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files[0];
+                  setSelectedImage(URL.createObjectURL(file));
+                }}
+              />
+            </FormControl>
+            {selectedImage && (
+              <Image
+                boxSize="200px"
+                objectFit="cover"
+                src={selectedImage}
+                alt="Selected book cover"
+                borderRadius="md"
+                alignSelf="center"
+              />
+            )}
+            <Spacer />
+            <Button
+              colorScheme="teal"
+              px={10}
+              type="submit"
+              size="lg"
+              alignSelf="end"
+            >
+              {bookData ? "Edit Book" : "Create Book"}
+            </Button>
+          </VStack>
+        </Flex>
+      </form>
+    </Box>
   );
 }

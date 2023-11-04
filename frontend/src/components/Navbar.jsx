@@ -16,6 +16,7 @@ import {
   useDisclosure,
   useToast,
   VStack,
+  useColorModeValue
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -26,6 +27,9 @@ const Navbar = () => {
   const [isLogin, setIsLogin] = useState(false);
   const toast = useToast();
   const navigate = useNavigate();
+
+  const modalBackground = useColorModeValue('white', 'gray.700');
+  const secondaryTextColor = useColorModeValue('gray.600', 'gray.400');
 
   useEffect(() => {
     const token = window.localStorage.getItem("token");
@@ -101,42 +105,50 @@ const Navbar = () => {
           }}
         >
           <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>Login</ModalHeader>
-            <ModalCloseButton />
-            <ModalBody>
-              <VStack>
-                <FormControl isRequired>
-                  <FormLabel>Email</FormLabel>
-                  <Input
-                    name="email"
-                    type="email"
-                    placeholder="Enter your email address"
-                  />
-                </FormControl>
-                <FormControl isRequired>
-                  <FormLabel>Password</FormLabel>
-                  <Input
-                    type="password"
-                    name="password"
-                    placeholder="Enter your password"
-                  />
-                </FormControl>
-              </VStack>
-            </ModalBody>
-            <ModalFooter>
-              <Button type="submit" form="login-form" colorScheme="blue" mr={3}>
-                Login
-              </Button>
-              <Link to="/register" onClick={onClose}>
-                <Button variant="ghost">
-                  Doesn't Have Account? Click here
-                </Button>
-              </Link>
-            </ModalFooter>
-          </ModalContent>
-        </form>
-      </Modal>
+          <ModalContent background={modalBackground}>
+      <ModalHeader>Login to Your Account</ModalHeader>
+      <ModalCloseButton />
+      <ModalBody pb={6}>
+        <VStack spacing={4}>
+          <FormControl isRequired>
+            <FormLabel>Email Address</FormLabel>
+            <Input
+              name="email"
+              type="email"
+              placeholder="Enter your email"
+              focusBorderColor="blue.500"
+            />
+          </FormControl>
+          <FormControl isRequired>
+            <FormLabel>Password</FormLabel>
+            <Input
+              type="password"
+              name="password"
+              placeholder="Enter your password"
+              focusBorderColor="blue.500"
+            />
+          </FormControl>
+        </VStack>
+      </ModalBody>
+      <ModalFooter
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
+        borderTopWidth="1px"
+        borderColor={useColorModeValue('gray.100', 'gray.600')}
+      >
+        <Button colorScheme="blue" w="full" mb={3} type="submit" form="login-form">
+          Log In
+        </Button>
+        <Link to="/register" onClick={onClose}>
+          <Text fontSize="sm" color={secondaryTextColor} textAlign="center">
+            Don’t have an account? <Text as="span" color="blue.500" fontWeight="semibold">Sign Up</Text>
+          </Text>
+        </Link>
+      </ModalFooter>
+    </ModalContent>
+  </form>
+</Modal>
     </Flex>
   );
 };
